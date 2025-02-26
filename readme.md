@@ -1,6 +1,6 @@
 # TBC Consumer Context Plugin
 
-This plugin enables seamless handling of consumer authentication and credential validation within Kong Gateway. After successfully authenticating an initial consumer using API keys, the plugin modifies the request context to reflect a different consumer. This allows subsequent processing—such as applying rate-limiting policies—to consider the updated consumer context.
+This plugin enables the use of consumer level plugins when using Konnect App Auth to authenticate API requests using self service APIKeys. Consumers are hidden when using Konnect App Auth, therefore to allow plugins to be scoped to consumer a new consumer must be created and the context switched to this new consumer based on Application Id.
 
 ---
 
@@ -9,7 +9,7 @@ This plugin enables seamless handling of consumer authentication and credential 
   Validates the initial consumer using Key Authentication and then changes the request context to a different consumer.
 
 - **Enhanced Authentication Flow:**  
-  Utilizes Kong’s built-in mechanisms (`kong.client.load_consumer`, `kong.db.keyauth_credentials:select_by_key`) to fetch and validate consumer entities and their associated credentials.
+  Utilizes Kong’s built-in mechanisms (`kong.client.load_consumer`) to fetch and validate consumer entities and their associated credentials.
 
 - **Integration with Rate Limiting:**  
   By changing the consumer context, the plugin enables the application of rate limiting policies to the new consumer.
@@ -18,10 +18,9 @@ This plugin enables seamless handling of consumer authentication and credential 
 
 ## **Execution Flow**
 
-1. The request arrives with headers containing the consumer name and API key.
-2. The plugin retrieves the consumer entity from Kong’s datastore using the provided consumer name.
-3. It then fetches the credential entity using the API key.
-4. If both the consumer and credential are valid, the plugin updates Kong’s context by calling `kong.client.authenticate()`.
+1. The request arrives with a headers containing the API key.
+2. The plugin retrieves the applicationid using the x-application-id header and loads a consumer with the same username.
+3. The plugin updates Kong’s context by calling `kong.client.authenticate()` to authenticate with the located consumer and the existing credential.
 5. The new consumer context is now active, allowing subsequent plugins (like rate limiting) to apply policies based on the updated consumer.
 
 ---
@@ -30,8 +29,9 @@ This plugin enables seamless handling of consumer authentication and credential 
 
 | Field Name                         | Type   | Description                                  | Default     |
 |------------------------------------|--------|----------------------------------------------|-------------|
-| `consumer_header_name`             | string | Header containing the initial consumer name. | `"appId"`   |
-| `consumer_credentials_header_name` | string | Header containing the initial API key.       | `"appCredentials"` |
+| `konnect_applicationId_header_name`             | string | Header containing the initial consumer name. | `"x-application-id"`   |
+
+In order to use the plugin a consumer entity must be manually created with the username set to the value of the Konnect Dev Portal Application's ApplicationId. This can be retrieved in the dev portal when viewing the application by looking at the URI. Example: https://tbcdev.eu.portal.konghq.com/application/57610687-192c-4c37-a8e8-a357ac114af4 - In this case '57610687-192c-4c37-a8e8-a357ac114af4' is the application Id.
 
 ---
 
@@ -45,7 +45,7 @@ Below is a simple Markdown representation of the execution flow:
       │
       ▼
 +-----------+
-| Key Auth  |       --> (Valid API Key)
+| Konnect Auth |   --> (Valid API Key)
 | Plugin    |       --> (Invalid API Key: 401 Unauthorized)
 +-----------+
       │

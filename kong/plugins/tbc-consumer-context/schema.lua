@@ -12,13 +12,9 @@ local schema = {
     { config = {
         type = "record",
         fields = {
-          { consumer_header_name = typedefs.header_name {
+          { konnect_applicationId_header_name = typedefs.header_name {
               required = true,
-              default = "appId" } },
-          { consumer_credentials_header_name = typedefs.header_name {
-              required = true,
-              default = "appCredentials" } },
-
+              default = "x-application-id" } }
         },
       },
     },
