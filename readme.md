@@ -51,7 +51,7 @@ Below is a simple Markdown representation of the execution flow:
       │
       ▼
 +-----------------+
-| TBC-Consumer-  |       --> (Consumer Not Found: 401 Unauthorized)
+| TBC-Consumer-  |       --> (Consumer Not Found: Allow call but don't map to a consumer)
 | Context Plugin  |       --> (Valid Consumer)
 +-----------------+
       │
