@@ -24,13 +24,14 @@ function plugin:access(plugin_conf)
     local consumer_entity = kong.client.load_consumer(consumer_name, true)
     --kong.log.inspect(consumer_entity)
     if not consumer_entity then
-        return kong.response.exit(401, { message = "Unauthorized: Consumer not found" })
+        kong.log.info("No matching consumer for appplicationId: ", consumer_name)    
+    --    return kong.response.exit(401, { message = "Unauthorized: Consumer not found" })
+    else
+        kong.log.info("Loaded Consumer: ", consumer_name)
+        -- Authenticate the consumer using the located consumer and the existing_credential
+        kong.client.authenticate(consumer_entity, existing_credential)
+        kong.log.info("Consumer authenticated successfully.")
     end
-    kong.log.info("Loaded Consumer: ", consumer_name)
-    
-    -- Authenticate the consumer using the located consumer and the existing_credential
-    kong.client.authenticate(consumer_entity, existing_credential)
-    kong.log.info("Consumer authenticated successfully.")
 end
 
 return plugin
