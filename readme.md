@@ -32,6 +32,7 @@ This plugin enables the use of consumer level plugins when using Konnect App Aut
 | `konnect_applicationId_header_name`             | string | Header containing the initial consumer name. | `"x-application-id"`   |
 | `konnect_consumer_username_header_name`         | string | Header containing the applicationId + consumer customId. | `"x-consumer-username"`   |
 | `add_consumer_username_header`                  | boolean | If selected will add request header for x-consumer-username. | `"false"`   |
+| `reject_request_no_matching_consumer`           | boolean | If selected will reject a request where no consumer exists for the applicationId. | `"false"`   |
 
 In order to use the plugin a consumer entity must be manually created with the username set to the value of the Konnect Dev Portal Application's ApplicationId. This can be retrieved in the dev portal when viewing the application by looking at the URI. Example: https://tbcdev.eu.portal.konghq.com/application/57610687-192c-4c37-a8e8-a357ac114af4 - In this case '57610687-192c-4c37-a8e8-a357ac114af4' is the application Id.
 

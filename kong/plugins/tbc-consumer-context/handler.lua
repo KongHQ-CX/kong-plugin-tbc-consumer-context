@@ -24,8 +24,10 @@ function plugin:access(plugin_conf)
     local consumer_entity = kong.client.load_consumer(consumer_name, true)
     --kong.log.inspect(consumer_entity)
     if not consumer_entity then
-        kong.log.info("No matching consumer for appplicationId: ", consumer_name)    
-    --    return kong.response.exit(401, { message = "Unauthorized: Consumer not found" })
+        kong.log.info("No matching consumer for appplicationId: ", consumer_name)
+        if plugin_conf.reject_request_no_matching_consumer then
+            return kong.response.exit(401, { message = "Unauthorized: Consumer not found for application" })
+        end
     else
         kong.log.info("Loaded Consumer: ", consumer_name)
         if consumer_entity.custom_id and plugin_conf.add_consumer_username_header then

@@ -14,7 +14,7 @@ local schema = {
         fields = {
           { konnect_applicationId_header_name = typedefs.header_name {
               required = true,
-              default = "x-application-id" } },
+              default = "x-application-id" } }, 
           { konnect_consumer_username_header_name = {
               type = "string",
               required = true,
@@ -23,7 +23,12 @@ local schema = {
               description = "Output consumer.username + '_' + consumer.customId as a header",
               type = "boolean",
               required = false,
-              default = false } }
+              default = false } },
+          { reject_request_no_matching_consumer = {
+              description = "Reject requests when no consumer can be loaded for the applicationId",
+              type = "boolean",
+              required = false,
+              default = false } },
         },
       },
     },
