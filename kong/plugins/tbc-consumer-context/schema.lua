@@ -14,7 +14,16 @@ local schema = {
         fields = {
           { konnect_applicationId_header_name = typedefs.header_name {
               required = true,
-              default = "x-application-id" } }
+              default = "x-application-id" } },
+          { konnect_consumer_username_header_name = {
+              type = "string",
+              required = true,
+              default = "x-consumer-username" } },
+          { add_consumer_username_header = {
+              description = "Output consumer.username + '_' + consumer.customId as a header",
+              type = "boolean",
+              required = false,
+              default = false } }
         },
       },
     },

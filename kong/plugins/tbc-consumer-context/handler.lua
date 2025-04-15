@@ -28,6 +28,12 @@ function plugin:access(plugin_conf)
     --    return kong.response.exit(401, { message = "Unauthorized: Consumer not found" })
     else
         kong.log.info("Loaded Consumer: ", consumer_name)
+        if consumer_entity.custom_id and plugin_conf.add_consumer_username_header then
+            -- add header with consumer custom_id
+            local consumer_username = (consumer_name .. '_' .. consumer_entity.custom_id)
+            kong.service.request.set_header(plugin_conf.konnect_consumer_username_header_name, consumer_username)
+            kong.log.info("Loaded Consumer with custom_id: ", consumer_entity.custom_id)
+        end
         -- Authenticate the consumer using the located consumer and the existing_credential
         kong.client.authenticate(consumer_entity, existing_credential)
         kong.log.info("Consumer authenticated successfully.")
